@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>X_slide</title>
+    <script
+      src="https://kit.fontawesome.com/ac16fcfa6b.js"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      ul,
+      ol {
+        list-style: none;
+      }
+
+      #content {
+        margin: 0 auto;
+        display: flex;
+        position: relative;
+        width: 800px;
+        height: 400px;
+        overflow: hidden;
+      }
+
+      .slide__box {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+      }
+
+      .slider__item {
+        width: 800px;
+        height: 400px;
+        display: block;
+        text-align: center;
+        line-height: 400px;
+        color: white;
+        float: left;
+      }
+
+      .slider__item:nth-child(odd) {
+        background-color: rgb(172, 83, 255);
+      }
+
+      .slider__item:nth-child(even) {
+        background-color: rgb(56, 159, 255);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="content">
+      <ul class="slide__box">
+        <li class="slider__item" id="fir">4</li>
+
+        <li class="slider__item">1</li>
+        <li class="slider__item">2</li>
+        <li class="slider__item">3</li>
+        <li class="slider__item">4</li>
+
+        <li class="slider__item" id="last">1</li>
+      </ul>
+    </div>
+
+    <button class="btns" id="prev">&lang;</button>
+    <button class="btns" id="next">&rang;</button>
+    <script>
+      const slideBox = document.querySelector(".slide__box");
+      const slides = document.querySelectorAll(".slider__item");
+      const btns = document.querySelectorAll(".btns");
+      let index = 1;
+      let size = slides[index].clientWidth;
+      function updateSlide() {
+        slideBox.style.transform = `translateX(${-size * index}px)`;
+      }
+      function slide() {
+        slideBox.style.transition = "transform 0.5s";
+        updateSlide();
+      }
+      function nextSlide() {
+        if (this.id === "prev") {
+          index = (index + (slides.length - 1)) % slides.length;
+        } else {
+          index = (index + 1) % slides.length;
+        }
+        slide();
+      }
+      slideBox.addEventListener("transitionend", () => {
+        if (slides[index].id === "fir") {
+          slideBox.style.transition = "none";
+          index = slides.length - 2;
+          slideBox.style.transform = `translateX(${-size * index}px)`;
+        } else if (slides[index].id === "last") {
+          slideBox.style.transition = "none";
+          index = 1;
+          slideBox.style.transform = `translateX(${-size * index}px)`;
+        }
+      });
+      updateSlide();
+      let nextSlideTime = setInterval(nextSlide, 2000);
+
+      btns.forEach((btn) => btn.addEventListener("click", nextSlide));
+      btns.forEach((btn) =>
+        btn.addEventListener("mouseover", () => {
+          clearInterval(nextSlideTime);
+        })
+      );
+      btns.forEach((btn) =>
+        btn.addEventListener("mouseleave", () => {
+          nextSlideTime = setInterval(nextSlide, 2000);
+        })
+      );
+    </script>
+  </body>
+</html>
